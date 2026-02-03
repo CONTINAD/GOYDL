@@ -1,27 +1,37 @@
 // Copy CA functionality
 function copyCA() {
-    const caText = document.getElementById('ca-text').innerText;
-    
-    if (caText === 'COMING SOON...') {
+    const caText = document.getElementById('ca-text-top')?.innerText || document.getElementById('ca-text')?.innerText;
+
+    if (!caText || caText === 'COMING SOON...') {
         // Fun feedback if CA not set
-        const box = document.querySelector('.ca-box');
+        const box = document.querySelector('.ca-box') || document.querySelector('.top-ca-bar');
         box.style.animation = 'shake 0.5s ease';
         setTimeout(() => {
             box.style.animation = '';
         }, 500);
         return;
     }
-    
+
     navigator.clipboard.writeText(caText).then(() => {
         const hint = document.querySelector('.copy-hint');
-        const originalText = hint.innerText;
-        hint.innerText = 'copied! ✓';
-        hint.style.color = '#ffd700';
-        
-        setTimeout(() => {
-            hint.innerText = originalText;
-            hint.style.color = '';
-        }, 2000);
+        const icon = document.querySelector('.copy-icon');
+
+        if (hint) {
+            const originalText = hint.innerText;
+            hint.innerText = 'copied! ✓';
+            hint.style.color = '#ffd700';
+            setTimeout(() => {
+                hint.innerText = originalText;
+                hint.style.color = '';
+            }, 2000);
+        }
+
+        if (icon) {
+            icon.innerText = '✓';
+            setTimeout(() => {
+                icon.innerText = '📋';
+            }, 2000);
+        }
     });
 }
 
@@ -51,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
     const stars = document.querySelectorAll('.star');
-    
+
     stars.forEach((star, index) => {
         const speed = (index + 1) * 0.1;
         star.style.transform = `translateY(${scrolled * speed}px)`;
@@ -65,7 +75,7 @@ const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLe
 document.addEventListener('keydown', (e) => {
     konamiCode.push(e.key);
     konamiCode = konamiCode.slice(-10);
-    
+
     if (konamiCode.join('') === konamiSequence.join('')) {
         document.body.style.animation = 'rainbow 2s linear';
         setTimeout(() => {
